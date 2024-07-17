@@ -58,28 +58,28 @@ function contentReducer(
       }
     case "action/add":
       return {
-        cumContent: state.displayContent,
+        cumContent: state.cumContent + state.displayContent,
         displayContent: state.displayContent,
         operation: operations.add,
         operationVisible: operations.add,
       };
     case "action/subtract":
       return {
-        cumContent: state.displayContent,
+        cumContent: state.cumContent == 0 ? state.displayContent : state.cumContent - state.displayContent,
         displayContent: state.displayContent,
         operation: operations.subtract,
         operationVisible: operations.subtract,
       };
     case "action/multiply":
       return {
-        cumContent: state.displayContent,
+        cumContent: state.cumContent == 0 ? state.displayContent : state.cumContent * state.displayContent,
         displayContent: state.displayContent,
         operation: operations.multiply,
         operationVisible: operations.multiply,
       };
     case "action/divide":
       return {
-        cumContent: state.displayContent,
+        cumContent:  state.cumContent == 0 ? state.displayContent : state.cumContent / state.displayContent,
         displayContent: state.displayContent,
         operation: operations.divide,
         operationVisible: operations.divide,
