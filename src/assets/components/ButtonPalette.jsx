@@ -20,8 +20,7 @@ export default function ButtonPalette() {
       <NumberButton label="2"></NumberButton>
       <NumberButton label="3"></NumberButton>
       <ActionButton label="+"></ActionButton>
-      <NumberButton label="0" className="col-span-2"></NumberButton>
-      <ActionButton label="."></ActionButton>
+      <NumberButton label="0" className="col-span-3"></NumberButton>
       <ActionButton label="="></ActionButton>
     </div>
   );

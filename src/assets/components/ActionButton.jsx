@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
+import { contentActions } from "../store";
 
 const labelMapper = {
     '=': 'result',
@@ -29,7 +30,36 @@ export default function ActionButton({ label, className }) {
   const operationVisible = useSelector(state => state.operationVisible)
 
   function actionHandler() {
-    dispatch({ type: "action/" + labelMapper[label] });
+    let actionFn = null;
+    switch (label) {
+      case "=":
+        actionFn = contentActions.result;
+        break;
+      case "+":
+        actionFn = contentActions.addAction;
+        break;
+      case "-":
+        actionFn = contentActions.subAction;
+        break;
+      case "*":
+        actionFn = contentActions.multiplyAction;
+        break;
+      case "/":
+        actionFn = contentActions.divideAction;
+        break;
+      case "%":
+        actionFn = contentActions.percentAction;
+        break;
+      case "C":
+        actionFn = contentActions.clearAction;
+        break;
+      case "T":
+        actionFn = contentActions.toggleAction;
+        break;
+      default:
+        break;
+    }
+    dispatch(actionFn())
   }
   return (
     <button

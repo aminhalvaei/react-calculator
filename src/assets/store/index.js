@@ -1,4 +1,4 @@
-import { createStore } from "redux";
+import { createSlice, configureStore } from "@reduxjs/toolkit";
 
 const operations = Object.freeze({
   add: 0,
@@ -9,117 +9,101 @@ const operations = Object.freeze({
   toggle: 5,
   clear: 6,
   dot: 7,
-  result: 8
+  result: 8,
 });
 
-function contentReducer(
-  state = {
+const operationsMap = {
+  [operations.add]: (a, b) => a + b,
+  [operations.subtract]: (a, b) => a - b,
+  [operations.multiply]: (a, b) => a * b,
+  [operations.divide]: (a, b) => a / b,
+  [operations.percent]: (a) => a / 100,
+  [operations.toggle]: (a) => a * -1,
+};
+
+const contentSlice = createSlice({
+  name: "content",
+  initialState: {
     displayContent: 0,
     cumContent: 0,
     operation: null,
     operationVisible: null,
   },
-  action
-) {
-  switch (action.type) {
-    case "action/result":
-      if (state.operation === operations.add) {
-        return {
-          cumContent: 0,
-          displayContent: state.cumContent + state.displayContent,
-          operation: null,
-        };
-      } else if (state.operation === operations.subtract) {
-        return {
-          cumContent: 0,
-          displayContent: state.cumContent - state.displayContent,
-          operation: null,
-        };
-      } else if (state.operation === operations.multiply) {
-        return {
-          cumContent: 0,
-          displayContent: state.cumContent * state.displayContent,
-          operation: null,
-        };
-      } else if (state.operation === operations.divide) {
-        return {
-          cumContent: 0,
-          displayContent: state.cumContent / state.displayContent,
-          operation: null,
-        };
-      } else if (state.operation === operations.toggle) {
-        return {
-          cumContent: 0,
-          displayContent: state.cumContent * -1,
-          operation: null,
-        };
-      } else {
-        return state;
+  reducers: {
+    result(state) {
+      const operationFn = operationsMap[state.operation];
+      if (operationFn) {
+        const result =
+          state.operation === operations.toggle || state.operation === operations.percent
+            ? operationFn(state.cumContent)
+            : operationFn(state.cumContent, state.displayContent);
+        (state.cumContent = 0), (state.displayContent = result);
       }
-    case "action/add":
-      return {
-        cumContent: state.cumContent + state.displayContent,
-        displayContent: state.displayContent,
-        operation: operations.add,
-        operationVisible: operations.add,
-      };
-    case "action/subtract":
-      return {
-        cumContent: state.cumContent == 0 ? state.displayContent : state.cumContent - state.displayContent,
-        displayContent: state.displayContent,
-        operation: operations.subtract,
-        operationVisible: operations.subtract,
-      };
-    case "action/multiply":
-      return {
-        cumContent: state.cumContent == 0 ? state.displayContent : state.cumContent * state.displayContent,
-        displayContent: state.displayContent,
-        operation: operations.multiply,
-        operationVisible: operations.multiply,
-      };
-    case "action/divide":
-      return {
-        cumContent:  state.cumContent == 0 ? state.displayContent : state.cumContent / state.displayContent,
-        displayContent: state.displayContent,
-        operation: operations.divide,
-        operationVisible: operations.divide,
-      };
-    case "action/clear":
-      return {
-        cumContent: 0,
-        displayContent: 0,
-        operation: null,
-        operationVisible: null,
-      };
-    case "action/toggle":
-      return {
-        cumContent: state.cumContent * -1,
-        displayContent: state.displayContent * -1,
-        operation: null,
-        operationVisible: null,
-      };
-    case "content":
-      if (state.operationVisible !== null) {
-        return {
-          displayContent: Number(action.value),
-          cumContent: state.cumContent,
-          operation : state.operation,
-          operationVisible: null,
-        };
-      } else {
-        let updatedDisplay = state.displayContent + action.value;
-        return {
-          displayContent: Number(updatedDisplay),
-          cumContent: state.cumContent,
-          operation : state.operation,
-          operationVisible: state.operationVisible,
-        };
-      }
-    default:
-      return state;
-  }
-}
+    },
+    addAction(state) {
+      state.cumContent = state.cumContent + state.displayContent;
+      state.operation = operations.add;
+      state.operationVisible = operations.add;
+    },
+    subAction(state) {
+      state.cumContent =
+        state.cumContent == 0
+          ? state.displayContent
+          : state.cumContent - state.displayContent;
+      state.operation = operations.subtract;
+      state.operationVisible = operations.subtract;
+    },
+    multiplyAction(state) {
+      state.cumContent =
+        state.cumContent == 0
+          ? state.displayContent
+          : state.cumContent * state.displayContent;
+      state.operation = operations.multiply;
+      state.operationVisible = operations.multiply;
+    },
+    divideAction(state) {
+      state.cumContent =
+        state.cumContent == 0
+          ? state.displayContent
+          : state.cumContent / state.displayContent;
+      state.operation = operations.divide;
+      state.operationVisible = operations.divide;
+    },
+    percentAction(state) {
+      state.cumContent = state.cumContent / 100;
+      state.displayContent = state.displayContent / 100;
+      state.operation = null;
+      state.operationVisible = null;
+    },
+    clearAction(state) {
+      state.cumContent = 0;
+      state.displayContent = 0;
+      state.operation = null;
+      state.operationVisible = null;
+    },
+    toggleAction(state) {
+      state.cumContent = state.cumContent * -1;
+      state.displayContent = state.displayContent * -1;
+      state.operation = null;
+      state.operationVisible = null;
+    },
 
-const store = createStore(contentReducer);
+    number(state, action) {
+      if (state.operationVisible !== null) {
+        state.displayContent = Number(action.payload);
+        state.operationVisible = null;
+      } else {
+        let updatedDisplay = state.displayContent + action.payload;
+        state.displayContent = Number(updatedDisplay);
+      }
+    },
+  },
+});
+
+const store = configureStore({
+  reducer: contentSlice.reducer
+});
+
+export const contentActions = contentSlice.actions;
 
 export default store;

@@ -1,13 +1,11 @@
 import { useDispatch } from "react-redux";
+import { contentActions } from "../store";
 
 export default function NumberButton({ label, className }) {
   const dispatch = useDispatch();
 
   function numberHandler() {
-    dispatch({
-      type: `content`,
-      value: label,
-    });
+    dispatch(contentActions.number(label));
   }
 
   return (
