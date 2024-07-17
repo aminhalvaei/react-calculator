@@ -4,7 +4,10 @@ export default function NumberButton({ label, className }) {
   const dispatch = useDispatch();
 
   function numberHandler() {
-    dispatch({ type: "content/" + label });
+    dispatch({
+      type: `content`,
+      value: label,
+    });
   }
 
   return (
