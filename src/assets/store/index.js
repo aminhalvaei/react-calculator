@@ -25,31 +25,31 @@ function contentReducer(
     case "action/result":
       if (state.operation === operations.add) {
         return {
-          cumContent: state.cumContent + state.displayContent,
+          cumContent: 0,
           displayContent: state.cumContent + state.displayContent,
           operation: null,
         };
       } else if (state.operation === operations.subtract) {
         return {
-          cumContent: state.cumContent - state.displayContent,
+          cumContent: 0,
           displayContent: state.cumContent - state.displayContent,
           operation: null,
         };
       } else if (state.operation === operations.multiply) {
         return {
-          cumContent: state.cumContent * state.displayContent,
+          cumContent: 0,
           displayContent: state.cumContent * state.displayContent,
           operation: null,
         };
       } else if (state.operation === operations.divide) {
         return {
-          cumContent: state.cumContent / state.displayContent,
+          cumContent: 0,
           displayContent: state.cumContent / state.displayContent,
           operation: null,
         };
       } else if (state.operation === operations.toggle) {
         return {
-          cumContent: state.cumContent * -1,
+          cumContent: 0,
           displayContent: state.cumContent * -1,
           operation: null,
         };
